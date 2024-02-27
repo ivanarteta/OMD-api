@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+  # Mysql database container
+  db:
+    image: mysql
+    container_name: db_symfony-OMD-api
+    restart: always
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    ports:
+      - 3316:3306
+    expose:
+      - 3306
+
+  # phpmyadmin container
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin-OMD-api
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8081:80
+    environment:
+      PMA_HOST: db
+  # Symfony apache project container
+  www:
+    build: docker/php
+    container_name: OMD-api
+    ports:
+      - 4041:80
+    volumes:
+      - ./docker/php/vhosts:/etc/apache2/sites-enabled
+      - ./:/var/www
+    restart: always
+
+networks:
+  default:
+    external:
+      name: OMD-api-network
+
+volumes:
+  db-data:
