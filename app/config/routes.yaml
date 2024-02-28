@@ -3,3 +3,12 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+index:
+    path: /
+    controller: App\Controller\AppController
+
+save_movie:
+    path: /save_movie
+    controller: App\Controller\MovieController::save
+    methods: POST

@@ -6,6 +6,7 @@ RUN apt-get update \
     && apt-get install -qq -y --no-install-recommends \
     cron \
      vim \
+    default-mysql-client \
     sudo \
     nodejs \
     npm \

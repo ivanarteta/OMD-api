@@ -2,17 +2,16 @@ version: "3.8"
 services:
   # Mysql database container
   db:
-    image: mysql
-    container_name: db_symfony-OMD-api
+    image: mysql:8.0
+    container_name: mysql_db
     restart: always
-    volumes:
-      - db-data:/var/lib/mysql
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: symfony_db
+      MYSQL_USER: symfony_user
+      MYSQL_PASSWORD: symfony_password
     ports:
-      - 3316:3306
-    expose:
-      - 3306
+      - "3306:3306"
 
   # phpmyadmin container
   phpmyadmin:
