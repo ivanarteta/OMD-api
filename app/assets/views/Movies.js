@@ -1,15 +1,26 @@
 import React, {useState} from "react";
+import axios from "axios";
 
 export const Movies = () => {
     const [movieData, setMovieData] = useState();
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/ditto`);
-            const data = await response.json();
-            setMovieData(data);
-        }
+    React.useEffect( () => {
+        fetchSearchResults().then(r => console.log(r));
     }, []);
+
+    const fetchSearchResults = async () => {
+        try {
+            const response = await axios.get('http://www.omdbapi.com', {
+                params: {
+                    apikey: '731e41f',
+                    s: 'harry+potter'
+                }
+            });
+           console.log('Response:', response);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
     return (
         <div>
