@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\SaveMoviesUseCase;
+use App\UseCase\GetMoviesUseCase;
+use App\UseCase\SaveMoviesUseCase;
 use JsonException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class MovieController extends AbstractController
 {
     public function __construct(
-        private SaveMoviesUseCase $saveMoviesUseCase
+        private SaveMoviesUseCase $saveMoviesUseCase,
+        private GetMoviesUseCase $getMoviesUseCase
     )
     {
     }
@@ -40,6 +42,20 @@ class MovieController extends AbstractController
             [
                 "success" => true,
                 "message" => "Movies saved successfully"
+            ]
+        );
+    }
+
+    #[Route('/movies', name: 'get_movies', methods: ['GET'])]
+    public function getMovies(): Response
+    {
+        return $this->json(
+            [
+                "success" => true,
+                "message" => "Movies retrieved successfully",
+                "data" => [
+                    'movies' => $this->getMoviesUseCase->execute(),
+                ]
             ]
         );
     }

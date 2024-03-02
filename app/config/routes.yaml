@@ -7,3 +7,7 @@ controllers:
 index:
     path: /
     controller: App\Controller\AppController
+
+search:
+    path: /search
+    controller: App\Controller\AppController

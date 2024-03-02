@@ -13,6 +13,7 @@ export const Movies = () => {
     const [tableEntries, setTableEntries] = useState([]);
     const [movieData, setMovieData] = useState();
     const [inputText, setInputText] = useState();
+    const [isLoading, setIsLoading] = useState(false);
 
     React.useEffect(() => {
         movieData && setTableEntries(movieData.map((movie, index) => {
@@ -40,9 +41,15 @@ export const Movies = () => {
     };
 
     const saveMovies = async () => {
+        setIsLoading(true);
         try {
-            const response = await axios.post('http://localhost:4041/movies', {
+            await axios.post('/movies', {
                 movies: JSON.stringify(movieData)
+            }).then(() => {
+                setIsLoading(false);
+                setTableEntries([]);
+                setInputText(undefined);
+                alert('Movies saved');
             });
         } catch (error) {
             alert('Error saving movies');
@@ -51,31 +58,32 @@ export const Movies = () => {
     }
 
     return (
-        <div>
-            <h1>Movie Data</h1>
-            <div className={"search_wrapper"}>
-                <input
-                    type="text"
-                    placeholder={"Search your movies"}
-                    onChange={(event) => setInputText(event.target.value)}
-                    className={"movie_searcher"}
-                />
-                <button onClick={fetchSearchResults} className={"search_button"}>Search</button>
-            </div>
+        isLoading ? <p className={"loading"}>Saving...</p> : (
+            <div>
+                <div className={"search_wrapper"}>
+                    <input
+                        type="text"
+                        placeholder={"Search your movies"}
+                        onChange={(event) => setInputText(event.target.value)}
+                        className={"movie_searcher"}
+                    />
+                    <button onClick={fetchSearchResults} className={"search_button"}>Search</button>
+                </div>
 
-            <div className={"favourite_movies"}>
-                {tableEntries.length > 0 && (
-                    <div className={"movies_table"}>
-                        <h2>Result </h2>
-                        <CustomDataTable data={tableEntries} columns={tableColumns}/>
-                        <div className={"save_movies_text"}>
-                            <span>You can save this movies as favourites. Do you wan it?</span>
-                            <button onClick={() => {saveMovies()}}>Save</button>
+                <div className={"favourite_movies"}>
+                    {tableEntries.length > 0 && (
+                        <div className={"movies_table"}>
+                            <h2>Result </h2>
+                            <CustomDataTable data={tableEntries} columns={tableColumns}/>
+                            <div className={"save_movies_text"}>
+                                <span>You can save this movies as favourites. Do you wan it?</span>
+                                <button onClick={() => {saveMovies()}}>Save</button>
+                            </div>
                         </div>
-                    </div>
-                )
-                }
+                    )
+                    }
+                </div>
             </div>
-        </div>
+        )
     );
 }

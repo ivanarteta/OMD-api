@@ -1,0 +1,30 @@
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #34502b;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.navigation {
+    display: flex;
+    margin-left: 1rem;
+}
+
+.navigation a {
+    color: #34502b;
+    text-decoration: aqua;
+    margin-right: 20px;
+    font-size: 1.3rem;
+}
+
+.navigation a.selected {
+    border-bottom: 1px solid #34502b;
+}
+
+.avatar img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}

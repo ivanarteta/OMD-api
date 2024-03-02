@@ -1,12 +1,9 @@
 <?php
 
-namespace App;
+namespace App\UseCase;
 
 use App\Entity\Movie;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Exception\ORMException;
-use Doctrine\ORM\OptimisticLockException;
 
 class SaveMoviesUseCase
 {

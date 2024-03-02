@@ -4,9 +4,10 @@ namespace App\Entity;
 
 use App\Repository\MovieRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
-class Movie
+class Movie implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,7 +17,7 @@ class Movie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 4)]
+    #[ORM\Column(length: 10)]
     private ?string $year = null;
 
     #[ORM\Column(length: 255)]
@@ -25,7 +26,7 @@ class Movie
     #[ORM\Column]
     private ?int $valuation = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $omdId = null;
 
     public function getId(): ?int
@@ -98,5 +99,17 @@ class Movie
         $this->omdId = $omdId;
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'year' => $this->year,
+            'image' => $this->image,
+            'valuation' => $this->valuation,
+            'omdId' => $this->omdId
+        ];
     }
 }
