@@ -25,6 +25,9 @@ class Movie
     #[ORM\Column]
     private ?int $valuation = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $omdId = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -81,6 +84,18 @@ class Movie
     public function setValuation(int $valuation): static
     {
         $this->valuation = $valuation;
+
+        return $this;
+    }
+
+    public function getOmdId(): ?string
+    {
+        return $this->omdId;
+    }
+
+    public function setOmdId(string $omdId): static
+    {
+        $this->omdId = $omdId;
 
         return $this;
     }
