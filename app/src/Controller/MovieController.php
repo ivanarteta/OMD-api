@@ -6,6 +6,7 @@ use App\UseCase\DeleteMovieUseCase;
 use App\UseCase\EditMovieValuationUseCase;
 use App\UseCase\GetMoviesUseCase;
 use App\UseCase\SaveMoviesUseCase;
+use Doctrine\DBAL\Driver\PDO\Exception;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\OptimisticLockException;
 use JsonException;
@@ -113,7 +114,7 @@ class MovieController extends AbstractController
     {
         try {
             $this->deleteMovieUseCase->execute($id);
-        } catch (OptimisticLockException|ORMException) {
+        } catch (OptimisticLockException|ORMException|\Exception) {
             return $this->json(
                 [
                     "success" => false,

@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faPenToSquare, faTrash} from "@fortawesome/free-solid-svg-icons";
 import { Dialog } from 'primereact/dialog';
 import {Button} from "primereact/button";
+import {toast} from "react-toastify";
 
 
 export const MyMovies = () => {
@@ -26,10 +27,23 @@ export const MyMovies = () => {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [selectedMovieId, setSelectedMovieId] = useState();
     const [valuationInputValue, setValuationInputValue] = useState(0);
+    const [searchTerm, setSearchTerm] = useState();
+    const [filteredTableEntries, setFilteredTableEntries] = useState([]);
 
     React.useEffect(() => {
         getMyMovies();
     }, []);
+
+    React.useEffect(() => {
+        if (!searchTerm) {
+            setFilteredTableEntries(tableEntries);
+        } else {
+            const filteredData = tableEntries.filter(entry =>
+                entry.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setFilteredTableEntries(filteredData);
+        }
+    }, [searchTerm, tableEntries]);
 
     React.useEffect(() => {
         myMoviesData && setTableEntries(myMoviesData.map((movie, index) => {
@@ -59,8 +73,8 @@ export const MyMovies = () => {
         <div>
             <Button label="Cancel" icon="pi pi-times" onClick={() => setShowEditValuationDialog(false)} className="p-button-text" />
             <Button label="Save" icon="pi pi-check" onClick={() => {
-                if (valuationInputValue < 0 || valuationInputValue > 10) {
-                    alert('Valuation must be between 0 and 10');
+                if (valuationInputValue < 0 || valuationInputValue > 5) {
+                    toast.warn("Valuation must be between 0 and 10")
                     return;
                 }
 
@@ -74,11 +88,12 @@ export const MyMovies = () => {
                         getMyMovies();
                         setValuationInputValue(0);
                         setShowEditValuationDialog(false);
+                        toast.success("Movie successfully edited")
                     });
                 } catch (error) {
                     setIsLoading(false);
                     setShowEditValuationDialog(true);
-                    alert('Error saving valuation');
+                    toast.error("Error saving valuation!")
                 }
             }} />
         </div>
@@ -94,11 +109,12 @@ export const MyMovies = () => {
                     axios.delete(`/movie/${selectedMovieId}`).then(response => {
                         getMyMovies();
                         setShowDeleteDialog(false);
+                        toast.success("Movie successfully deleted!")
                     });
                 } catch (error) {
                     setIsLoading(false);
                     setShowDeleteDialog(true);
-                    alert('Error deleting movie');
+                   toast.error("Error deleting movie")
                 }
             }} />
         </div>
@@ -115,8 +131,8 @@ export const MyMovies = () => {
                 loading={isDialogLoading}
             >
                 <div className={'valuation_wrapper'}>
-                    <p>Select your evaluation for this movie. Rate this from 0 to 10.</p>
-                    <input type="number" min={0} max={10} onChange={(e) => setValuationInputValue(e.target.value)}/>
+                    <p>Select your evaluation for this movie. Rate this from 0 to 5.</p>
+                    <input type="number" min={0} max={5} onChange={(e) => setValuationInputValue(e.target.value)}/>
                 </div>
             </Dialog>
         )
@@ -145,7 +161,7 @@ export const MyMovies = () => {
                  setMyMoviesData(response.data.data.movies);
              });
         } catch (error) {
-            alert('Error fetching data');
+            toast.error("Error fetching data")
         }
     };
 
@@ -157,7 +173,12 @@ export const MyMovies = () => {
                     (
                         tableEntries.length > 0 && (
                             <div className={"movies_table"}>
-                                <CustomDataTable data={tableEntries} columns={tableColumns}/>
+                                <input
+                                    type="text"
+                                    placeholder="Filter by title..."
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                                <CustomDataTable data={filteredTableEntries} columns={tableColumns}/>
                             </div>
                         )
                     )

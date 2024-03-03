@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import axios from "axios";
 import '../styles/Movies.scss';
 import {CustomDataTable} from "../CustomDataTable";
+import {toast} from "react-toastify";
 
 export const Movies = () => {
     const tableColumns = [
@@ -36,7 +37,7 @@ export const Movies = () => {
             });
             setMovieData(response.data.Search);
         } catch (error) {
-            alert('Error fetching data');
+            toast.error("Error fetching data!")
         }
     };
 
@@ -49,12 +50,11 @@ export const Movies = () => {
                 setIsLoading(false);
                 setTableEntries([]);
                 setInputText(undefined);
-                alert('Movies saved');
+                toast.success("Movies saved!")
                 window.location.href = "/";
             });
         } catch (error) {
-            alert('Error saving movies');
-            console.error('Error fetching data:', error);
+            toast.error("Error saving movies")
         }
     }
 
