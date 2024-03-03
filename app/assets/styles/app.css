@@ -1,3 +1,14 @@
 body {
     background-color: white;
 }
+
+input {
+    border-radius: 0.375rem;
+    background: lightgray;
+}
+
+button {
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    background: lightgray;
+}

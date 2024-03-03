@@ -1,3 +1,26 @@
 .favourite_movies, .loading {
   margin-top: 1rem;
 }
+
+.valuation_wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  gap: 2rem;
+}
+
+.p-dialog {
+  background: darkgrey;
+  padding: 1rem;
+  border-radius: 0.375rem;
+
+  & .p-dialog-footer {
+    & div {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+  }
+}

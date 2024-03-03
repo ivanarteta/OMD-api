@@ -50,6 +50,7 @@ export const Movies = () => {
                 setTableEntries([]);
                 setInputText(undefined);
                 alert('Movies saved');
+                window.location.href = "/";
             });
         } catch (error) {
             alert('Error saving movies');
