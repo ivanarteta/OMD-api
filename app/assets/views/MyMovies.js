@@ -7,6 +7,7 @@ import {faPenToSquare, faTrash} from "@fortawesome/free-solid-svg-icons";
 import { Dialog } from 'primereact/dialog';
 import {Button} from "primereact/button";
 import {toast} from "react-toastify";
+import {useMovie} from "../hooks/useMovie";
 
 
 export const MyMovies = () => {
@@ -19,10 +20,11 @@ export const MyMovies = () => {
         {Header: '', accessor: 'delete'},
     ];
 
+    const {movies, editMovie, getMovies, deleteMovie} = useMovie();
+
     const [isLoading, setIsLoading] = useState(true);
     const [isDialogLoading, setIsDialogLoading] = useState(false);
     const [tableEntries, setTableEntries] = useState([]);
-    const [myMoviesData, setMyMoviesData] = useState();
     const [showEditValuationDialog, setShowEditValuationDialog] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [selectedMovieId, setSelectedMovieId] = useState();
@@ -46,7 +48,7 @@ export const MyMovies = () => {
     }, [searchTerm, tableEntries]);
 
     React.useEffect(() => {
-        myMoviesData && setTableEntries(myMoviesData.map((movie, index) => {
+        movies && setTableEntries(movies.map((movie, index) => {
             return {
                 id: movie.id,
                 omdId: movie.omdId,
@@ -67,7 +69,7 @@ export const MyMovies = () => {
                 </div>
             }
         }));
-    }, [myMoviesData]);
+    }, [movies]);
 
     const editDialogFooterContent = (
         <div>
@@ -81,20 +83,21 @@ export const MyMovies = () => {
                 setIsLoading(true);
                 setShowEditValuationDialog(false);
 
-                try {
-                    axios.put(`/movie/${selectedMovieId}`, {
-                        valuation: valuationInputValue
-                    }).then(response => {
+                editMovie(
+                    selectedMovieId,
+                    valuationInputValue,
+                    () => {
                         getMyMovies();
                         setValuationInputValue(0);
                         setShowEditValuationDialog(false);
                         toast.success("Movie successfully edited")
-                    });
-                } catch (error) {
-                    setIsLoading(false);
-                    setShowEditValuationDialog(true);
-                    toast.error("Error saving valuation!")
-                }
+                    },
+                    () => {
+                        setIsLoading(false);
+                        setShowEditValuationDialog(true);
+                        toast.error("Error saving valuation!")
+                    }
+                )
             }} />
         </div>
     );
@@ -105,17 +108,20 @@ export const MyMovies = () => {
             <Button label="Delete" icon="pi pi-check" onClick={() => {
                 setIsLoading(true);
                 setShowDeleteDialog(false);
-                try {
-                    axios.delete(`/movie/${selectedMovieId}`).then(response => {
+                deleteMovie(
+                    selectedMovieId,
+                    () => {
                         getMyMovies();
                         setShowDeleteDialog(false);
                         toast.success("Movie successfully deleted!")
-                    });
-                } catch (error) {
-                    setIsLoading(false);
-                    setShowDeleteDialog(true);
-                   toast.error("Error deleting movie")
-                }
+                    },
+                    () => {
+                        setIsLoading(false);
+                        setShowDeleteDialog(true);
+                        toast.error("Error deleting movie")
+                    }
+
+                );
             }} />
         </div>
     )
@@ -155,14 +161,15 @@ export const MyMovies = () => {
 
     const getMyMovies = () => {
         setIsLoading(true);
-        try {
-             axios.get('/movies').then(response => {
-                 setIsLoading(false);
-                 setMyMoviesData(response.data.data.movies);
-             });
-        } catch (error) {
-            toast.error("Error fetching data")
-        }
+        getMovies(
+            () => {
+                setIsLoading(false);
+            },
+            () => {
+                setIsLoading(false);
+                toast.error("Error fetching data")
+             }
+        )
     };
 
     return (

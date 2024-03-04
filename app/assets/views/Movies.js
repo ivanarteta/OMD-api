@@ -3,6 +3,7 @@ import axios from "axios";
 import '../styles/Movies.scss';
 import {CustomDataTable} from "../CustomDataTable";
 import {toast} from "react-toastify";
+import {useMovie} from "../hooks/useMovie";
 
 export const Movies = () => {
     const tableColumns = [
@@ -15,6 +16,8 @@ export const Movies = () => {
     const [movieData, setMovieData] = useState();
     const [inputText, setInputText] = useState();
     const [isLoading, setIsLoading] = useState(false);
+
+    const { saveMovies } = useMovie();
 
     React.useEffect(() => {
         movieData && setTableEntries(movieData.map((movie, index) => {
@@ -41,21 +44,22 @@ export const Movies = () => {
         }
     };
 
-    const saveMovies = async () => {
+    const saveMyMovies = async () => {
         setIsLoading(true);
-        try {
-            await axios.post('/movies', {
-                movies: JSON.stringify(movieData)
-            }).then(() => {
+        await saveMovies(
+            movieData,
+            () => {
                 setIsLoading(false);
                 setTableEntries([]);
                 setInputText(undefined);
                 toast.success("Movies saved!")
                 window.location.href = "/";
-            });
-        } catch (error) {
-            toast.error("Error saving movies")
-        }
+            },
+            () => {
+                setIsLoading(false);
+                toast.error("Error saving movies! Already you save it")
+            }
+        )
     }
 
     return (
@@ -78,7 +82,7 @@ export const Movies = () => {
                             <CustomDataTable data={tableEntries} columns={tableColumns}/>
                             <div className={"save_movies_text"}>
                                 <span>You can save this movies as favourites. Do you wan it?</span>
-                                <button onClick={() => {saveMovies()}}>Save</button>
+                                <button onClick={() => {saveMyMovies()}}>Save</button>
                             </div>
                         </div>
                     )

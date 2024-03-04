@@ -2,6 +2,7 @@
 
 namespace App\UseCase;
 
+use App\Repository\MovieRepository;
 use Doctrine\DBAL\Driver\PDO\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Movie;
@@ -12,6 +13,7 @@ class DeleteMovieUseCase
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
+        private readonly MovieRepository $movieRepository,
     )
     {
     }
@@ -23,9 +25,9 @@ class DeleteMovieUseCase
      */
     public function execute(int $id): void
     {
-        $movie = $this->entityManager->find(Movie::class, $id);
+        $movie = $this->movieRepository->find($id);
 
-        if(!is_null($movie)) {
+        if(is_null($movie)) {
             throw new Exception('Not found');
         }
 

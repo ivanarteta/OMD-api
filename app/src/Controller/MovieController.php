@@ -114,11 +114,12 @@ class MovieController extends AbstractController
     {
         try {
             $this->deleteMovieUseCase->execute($id);
-        } catch (OptimisticLockException|ORMException|\Exception) {
+        } catch (OptimisticLockException|ORMException|\Exception $e) {
             return $this->json(
                 [
                     "success" => false,
                     "message" => "Error deleting movie",
+                    "exception" => $e->getMessage()
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
