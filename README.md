@@ -32,3 +32,7 @@ $ php bin/console doctrine:database:create
 $ php bin/console doctrine:migrations:migrate
 
 ```
+
+## Usage
+Open your browser and go to http://localhost:4041
+You can see the database in http://localhost:8081 (user: root, password: root_password)
